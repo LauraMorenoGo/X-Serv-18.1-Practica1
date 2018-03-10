@@ -25,7 +25,7 @@ class acortURLApp(webapp.webApp):
     
     urls = ""
     urlsacortadas = ""
-    urlacort = 0    #Inicializo a 0 el número que voy a asignar a cada URL acortada
+    numurlacort = 0    #Inicializo a 0 el número que voy a asignar a cada URL acortada
     dicURL = {}
     dicURLacort = {}
 
@@ -43,7 +43,7 @@ class acortURLApp(webapp.webApp):
             cuerpo = ""
             url = cuerpo
             
-        print ("***URL***" + url + "***")
+        print ("URL ==" + url)
     
         return (metodo, recurso, url)
         
@@ -55,12 +55,48 @@ class acortURLApp(webapp.webApp):
         if parsedRequest:
             if metodo == "GET":
                 if recurso == "":
-                    tabla = Tabla()
-                    return("200 OK", "<html>ACORTADOR DE URLs<br>" + Formulario() + tabla + '</html>')
+                    if self.numurlacort > 0:
+                        tabla = Tabla(self.urls, self.urlsacortadas)
+                        returnCode = "200 OK"
+                        htmlAnswer = "<html>ACORTADOR DE URLs<br>" + Formulario() + tabla + "</html>"
+                    else:
+                        returnCode = "200 OK"
+                        htmlAnswer = "<html>ACORTADOR DE URLs<br>" + Formulario() + "</html>"
+                        
+                else:
+                    if (int(recurso) < self.numurlacort):
+                        nuevaurl = self.dicURLacort[int(recurso)]
+                        returnCode = "307 REDIRECT"
+                        htmlAnswer = "<html><body><h1>Redirigiendo...</h1><meta http-equiv='Refresh' content='0; url=" + str(nuevaurl) +"'></body></html>"
+
+                    else:
+                        returnCode = "400 Resource not found!"
+                        htmlAnswer = "<html><body><h1>Error 404</h1></body></html>"
+                    
+                        
+            if metodo == "POST":
+                if url == "URL+a+acortar":  #Esto es lo que pone en el formulario en el hueco para poner la url, si recibimos 
+                                            #esto significaria que no hemos enviado nada
+                    returnCode = "400 Resource not found!"
+                    htmlAnswer = "<html><body><h1>Introduce una URL</h1></body></html>"
                 
+                if url not in self.dicURL.keys():
+				    self.dicURLacort[self.numurlacort] = url
+				    self.dicURL[url] = self.numurlacort
+				    self.urls += "<p>" + str(url) + "</p>"
+				    self.urlsacortadas += "<p>http://localhost:1234/" + str(self.numurlacort) + "</p>"
+				    self.numurlacort = self.numurlacort + 1                  
+				
+				urlacort = "http://localhost:1234/" + str(self.numurlacort - 1)
+			    enlace = "<p><h4><a href=" + url + ">Url" + str(url) + "</a></h4></p><p><h4><a href=" + urlacort + ">Url acortada" + str(urlShorted) + "</a></h4></p>"
+			    + "<p><a href='http://localhost:1234/'>Volver al formulario</a></p>"
+			    returnCode= "200 OK!"
+			    htmlAnswer = '<html><body style="background:#5C0349">' + enlaces + "</body></html>"
+				    
+			return(returnCode, htmlAnswer)
             
         else:
-            return("400 Resource nor found!", "<html><body><h1>Error 404</h1></body></html>")
+            return("400 Resource not found!", "<html><body><h1>Error 404</h1></body></html>")
         
         
             
