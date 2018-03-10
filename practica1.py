@@ -6,19 +6,14 @@ import webapp
 
 
 def Formulario():
-    """
-    <form action="" method="POST">
-      Introduzca la URL que desea acortar:<br>
-      <input type="text" name="url" value="URL a acortar"><br>
-      <input type="submit" value="Enviar">
-      
-    </form> 
+    formulario = """
+    <form action="" method="POST">Introduzca la URL que desea acortar:<br><input type="text" name="url" value="URL a acortar"><br><input type="submit" value="Enviar"></form> 
     """
     return formulario
     
 def TablaURL(url, urlacort):    #Lo hacemos así para poder pasarle la url y su correspondiente url acortada.
     
-    "<table><tr><td>URL original</td><td>URL acortada</td></tr><tr><td>" + url + "</td><td>" + urlacort + "</td></tr></table>"
+    tabla = "<table><tr><td>URL original</td><td>URL acortada</td></tr><tr><td>" + url + "</td><td>" + urlacort + "</td></tr></table>"
     return tabla
 
 class acortURLApp(webapp.webApp):
@@ -51,20 +46,22 @@ class acortURLApp(webapp.webApp):
     def process(self, parsedRequest):
     
         metodo, recurso, url = parsedRequest
+        formulario = Formulario()
+        tabla = TablaURL(self.urls, self.urlsacortadas)
         
         if parsedRequest:
             if metodo == "GET":
                 if recurso == "":
                     if self.numurlacort > 0:
-                        tabla = Tabla(self.urls, self.urlsacortadas)
                         returnCode = "200 OK"
-                        htmlAnswer = "<html>ACORTADOR DE URLs<br>" + Formulario() + tabla + "</html>"
+                        htmlAnswer = "<html>ACORTADOR DE URLs<br>" + formulario + tabla + "</html>"
                     else:
                         returnCode = "200 OK"
-                        htmlAnswer = "<html>ACORTADOR DE URLs<br>" + Formulario() + "</html>"
+                        htmlAnswer = "<html>ACORTADOR DE URLs<br>" + formulario + "</html>"
                         
                 else:
-                    if (int(recurso) < self.numurlacort):
+                    buscadorindice = int(recurso)
+                    if (buscadorindice < self.numurlacort):
                         nuevaurl = self.dicURLacort[int(recurso)]
                         returnCode = "307 REDIRECT"
                         htmlAnswer = "<html><body><h1>Redirigiendo...</h1><meta http-equiv='Refresh' content='0; url=" + str(nuevaurl) +"'></body></html>"
@@ -81,27 +78,21 @@ class acortURLApp(webapp.webApp):
                     htmlAnswer = "<html><body><h1>Introduce una URL</h1></body></html>"
                 
                 if url not in self.dicURL.keys():
-				    self.dicURLacort[self.numurlacort] = url
-				    self.dicURL[url] = self.numurlacort
-				    self.urls += "<p>" + str(url) + "</p>"
-				    self.urlsacortadas += "<p>http://localhost:1234/" + str(self.numurlacort) + "</p>"
-				    self.numurlacort = self.numurlacort + 1                  
-				
-				urlacort = "http://localhost:1234/" + str(self.numurlacort - 1)
-			    enlace = "<p><h4><a href=" + url + ">Url" + str(url) + "</a></h4></p><p><h4><a href=" + urlacort + ">Url acortada" + str(urlShorted) + "</a></h4></p>"
-			    + "<p><a href='http://localhost:1234/'>Volver al formulario</a></p>"
-			    returnCode= "200 OK!"
-			    htmlAnswer = '<html><body style="background:#5C0349">' + enlaces + "</body></html>"
-				    
-			return(returnCode, htmlAnswer)
-            
+                    self.dicURLacort[self.numurlacort] = url
+                    self.dicURL[url] = self.numurlacort
+                    self.urls += "<p>" + str(url) + "</p>"
+                    self.urlsacortadas += "<p>http://localhost:1234/" + str(self.numurlacort) + "</p>"
+                    self.numurlacort = self.numurlacort + 1
+                    
+                urlacort = "http://localhost:1234/" + str(self.numurlacort - 1)
+                enlace = "<p><h4><a href=" + url + ">Url" + str(url) + "</a></h4></p><p><h4><a href=" + urlacort + ">Url acortada" + str(urlShorted) + "</a></h4></p>" + "<p><a href='http://localhost:1234/'>Volver al formulario</a></p>"
+                returnCode = "200 OK!"
+                htmlAnswer = '<html><body style="background:#5C0349">' + enlaces + "</body></html>"
+                 
+            return(returnCode, htmlAnswer)
+
         else:
             return("400 Resource not found!", "<html><body><h1>Error 404</h1></body></html>")
-        
-        
-            
-            
-        
-           
+     
 if __name__ == "__main__":
     testWebApp = acortURLApp("localhost", 1234)
