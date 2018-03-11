@@ -13,7 +13,7 @@ def Formulario():
     
 def TablaURL(url, urlacort):    #Lo hacemos así para poder pasarle la url y su correspondiente url acortada.
     
-    tabla = "<table><tr><td>URL original</td><td>URL acortada</td></tr><tr><td>" + url + "</td><td>" + urlacort + "</td></tr></table>"
+    tabla = "<table><tr><td>URL original   </td><td>URL acortada</td></tr><tr><td>" + url + "</td><td>" + urlacort + "</td></tr></table>"
     return tabla
 
 class acortURLApp(webapp.webApp):
@@ -33,7 +33,7 @@ class acortURLApp(webapp.webApp):
             if len(cuerpo.split("%3A%2F%2F")) == 1:
                 url = "http://" + cuerpo
             else:
-                url = cuerpo.replace("%3A%2F%2F", "://").rstrip("%2F")
+                url = cuerpo.replace("%3A%2F%2F", "://").split('%', 1)[0]
         else:
             cuerpo = ""
             url = cuerpo
@@ -57,14 +57,14 @@ class acortURLApp(webapp.webApp):
                         htmlAnswer = "<html>ACORTADOR DE URLs<br>" + formulario + tabla + "</html>"
                     else:
                         returnCode = "200 OK"
-                        htmlAnswer = "<html>ACORTADOR DE URLs<br>" + formulario + "</html>"
+                        htmlAnswer = "<html>ACORTADOR DE URLs<br>" + formulario + tabla + "</html>"
                         
                 else:
                     buscadorindice = int(recurso)
                     if (buscadorindice < self.numurlacort):
                         nuevaurl = self.dicURLacort[int(recurso)]
                         returnCode = "307 REDIRECT"
-                        htmlAnswer = "<html><body><h1>Redirigiendo...</h1><meta http-equiv='Refresh' content='0; url=" + str(nuevaurl) +"'></body></html>"
+                        htmlAnswer = "<html><body><h1>Redirigiendo...</h1><meta http-equiv='Refresh' content='0; url= " + str(nuevaurl) +"'></body></html>"
 
                     else:
                         returnCode = "400 Resource not found!"
@@ -84,7 +84,7 @@ class acortURLApp(webapp.webApp):
                     self.numurlacort = self.numurlacort + 1
                     
                 urlacort = "http://localhost:1234/" + str(self.numurlacort - 1)
-                enlace = "<p><h4><a href=" + url + ">Url" + str(url) + "</a></h4></p><p><h4><a href=" + urlacort + ">Url acortada" + str(urlacort) + "</a></h4></p>" + "<p><a href='http://localhost:1234/'>Volver al formulario</a></p>"
+                enlace = "<p><h4>URL ORIGINAL  <a href=" + url + ">" + str(url) + "</a></h4></p><p><h4>URL ACORTADA   <a href=" + urlacort + ">" + str(urlacort) + "</a></h4></p>" + "<p><a href='http://localhost:1234/'>Volver al formulario</a></p>"
                 returnCode = "200 OK!"
                 htmlAnswer = '<html><body>' + enlace + "</body></html>"
                  
