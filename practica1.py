@@ -7,7 +7,7 @@ import webapp
 
 def Formulario():
     formulario = """
-    <form action="" method="POST">Introduzca la URL que desea acortar:<br><input type="text" name="url" value="URL a acortar"><br><input type="submit" value="Enviar"></form> 
+    <form action="" method="POST">Introduzca la URL que desea acortar:<br><input type="text" name="url" placeholder="URL a acortar"><br><input type="submit" value="Enviar"></form> 
     """
     return formulario
     
@@ -33,12 +33,12 @@ class acortURLApp(webapp.webApp):
             if len(cuerpo.split("%3A%2F%2F")) == 1:
                 url = "http://" + cuerpo
             else:
-                url = cuerpo.replace("%3A%2F%2F", "://")
+                url = cuerpo.replace("%3A%2F%2F", "://").rstrip("%2F")
         else:
             cuerpo = ""
             url = cuerpo
             
-        print ("URL ==" + url)
+        print ("URL limpia = " + url)
     
         return (metodo, recurso, url)
         
@@ -72,8 +72,7 @@ class acortURLApp(webapp.webApp):
                     
                         
             if metodo == "POST":
-                if url == "URL+a+acortar":  #Esto es lo que pone en el formulario en el hueco para poner la url, si recibimos 
-                                            #esto significaria que no hemos enviado nada
+                if url == "":  #Si recibimos esto significaria que no hemos enviado nada
                     returnCode = "400 Resource not found!"
                     htmlAnswer = "<html><body><h1>Introduce una URL</h1></body></html>"
                 
@@ -85,9 +84,9 @@ class acortURLApp(webapp.webApp):
                     self.numurlacort = self.numurlacort + 1
                     
                 urlacort = "http://localhost:1234/" + str(self.numurlacort - 1)
-                enlace = "<p><h4><a href=" + url + ">Url" + str(url) + "</a></h4></p><p><h4><a href=" + urlacort + ">Url acortada" + str(urlShorted) + "</a></h4></p>" + "<p><a href='http://localhost:1234/'>Volver al formulario</a></p>"
+                enlace = "<p><h4><a href=" + url + ">Url" + str(url) + "</a></h4></p><p><h4><a href=" + urlacort + ">Url acortada" + str(urlacort) + "</a></h4></p>" + "<p><a href='http://localhost:1234/'>Volver al formulario</a></p>"
                 returnCode = "200 OK!"
-                htmlAnswer = '<html><body style="background:#5C0349">' + enlaces + "</body></html>"
+                htmlAnswer = '<html><body>' + enlace + "</body></html>"
                  
             return(returnCode, htmlAnswer)
 
