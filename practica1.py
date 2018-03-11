@@ -4,6 +4,7 @@ import webapp
 
 #PRÁCTICA 1
 
+
 def Formulario():
     formulario = """
     <form action="" method="POST">Introduzca la URL que desea acortar:<br><input type="text" name="url" placeholder="URL a acortar"><br><input type="submit" value="Enviar"></form> 
@@ -30,9 +31,9 @@ class acortURLApp(webapp.webApp):
         if metodo == "POST":                #Hacemos esto aquí porque sino nos da un error de out of range si solo sacamos el cuerpo        
             cuerpo = request.split('\r\n\r\n', 1)[1].split('=')[1]      #Nos va a devolver lo que haya en el body
             if len(cuerpo.split("%3A%2F%2F")) == 1:
-                url = "http://" + cuerpo
+                url = "https://" + cuerpo.split('%', 1)[0]
             else:
-                url = cuerpo.replace("%3A%2F%2F", "://").split('%', 1)[0]
+                url = "https://" + cuerpo.split("%3A%2F%2F", 1)[1].split('%', 1)[0]
         else:
             cuerpo = ""
             url = cuerpo
