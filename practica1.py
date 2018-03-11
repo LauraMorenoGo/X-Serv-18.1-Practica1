@@ -4,7 +4,6 @@ import webapp
 
 #PRÁCTICA 1
 
-
 def Formulario():
     formulario = """
     <form action="" method="POST">Introduzca la URL que desea acortar:<br><input type="text" name="url" placeholder="URL a acortar"><br><input type="submit" value="Enviar"></form> 
