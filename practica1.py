@@ -58,7 +58,11 @@ class acortURLApp(webapp.webApp):
                     else:
                         returnCode = "200 OK"
                         htmlAnswer = "<html>ACORTADOR DE URLs<br>" + formulario + tabla + "</html>"
-                        
+                
+                elif recurso == "favicon.ico":  #Resuelto problema favicon que a veces (NO SIEMPRE) salía
+                    returnCode = "404 Resource not found!"
+                    htmlAnswer = "<html><body><h1>Error 404</h1></body></html>"
+                           
                 else:
                     buscadorindice = int(recurso)
                     if (buscadorindice < self.numurlacort):
@@ -82,7 +86,7 @@ class acortURLApp(webapp.webApp):
                     self.urls += "<p>" + str(url) + "</p>"
                     self.urlsacortadas += "<p>http://localhost:1234/" + str(self.numurlacort) + "</p>"
                     self.numurlacort = self.numurlacort + 1
-                    
+                
                 urlacort = "http://localhost:1234/" + str(self.numurlacort - 1)
                 enlace = "<p><h4>URL ORIGINAL  <a href=" + url + ">" + str(url) + "</a></h4></p><p><h4>URL ACORTADA   <a href=" + urlacort + ">" + str(urlacort) + "</a></h4></p>" + "<p><a href='http://localhost:1234/'>Volver al formulario</a></p>"
                 returnCode = "200 OK!"
