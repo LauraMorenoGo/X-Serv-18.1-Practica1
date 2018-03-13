@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import webapp
+import csv
 
 #PRÁCTICA 1
 
@@ -60,7 +61,7 @@ class acortURLApp(webapp.webApp):
                         htmlAnswer = "<html>ACORTADOR DE URLs<br>" + formulario + tabla + "</html>"
                 
                 elif recurso == "favicon.ico":  #Resuelto problema favicon que a veces (NO SIEMPRE) salía
-                    returnCode = "404 Resource not found!"
+                    returnCode = "404 Resource not found"
                     htmlAnswer = "<html><body><h1>Error 404</h1></body></html>"
                            
                 else:
@@ -89,6 +90,10 @@ class acortURLApp(webapp.webApp):
                 
                 urlacort = "http://localhost:1234/" + str(self.numurlacort - 1)
                 enlace = "<p><h4>URL ORIGINAL  <a href=" + url + ">" + str(url) + "</a></h4></p><p><h4>URL ACORTADA   <a href=" + urlacort + ">" + str(urlacort) + "</a></h4></p>" + "<p><a href='http://localhost:1234/'>Volver al formulario</a></p>"
+                
+                with open('listaurls.csv', 'a', newline='') as mifichero:
+                    urlfich = csv.writer(mifichero)
+                    urlfich.writerow([self.numurlacort, url])
                 returnCode = "200 OK!"
                 htmlAnswer = '<html><body>' + enlace + "</body></html>"
                  
@@ -96,6 +101,11 @@ class acortURLApp(webapp.webApp):
 
         else:
             return("400 Resource not found!", "<html><body><h1>Error 404</h1></body></html>")
-     
+            
+        def __init__(self, hostname, port):
+            miarchivo = open('listaurls.csv', 'a')
+            miarchivo.close()
+            super().__init__(hostname,port)
+        
 if __name__ == "__main__":
     testWebApp = acortURLApp("localhost", 1234)
